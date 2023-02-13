@@ -1,0 +1,22 @@
+{
+    "manifest_version": 3,
+    "name": "Hehehe",
+    "description": "Make youtube better again",
+    "version": "1.0",
+    "author": "Justin Liu",
+    "permissions": ["activeTab"],
+    "icons": {
+        "128": "favicon.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*.youtube.com/*"
+            ],
+            "js": [
+                "rotator.js"
+            ],
+            "run_at": "document_end"
+        }
+    ]
+}
