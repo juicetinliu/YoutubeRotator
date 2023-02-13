@@ -1,4 +1,4 @@
-console.log("running");
+
 
 const ELEMENT_TYPE = {
     ID: "id",
@@ -47,7 +47,6 @@ function addRotationButtons() {
     titleDiv.append(cssLink);
     titleDiv.append(buttonsContainer);
 
-    console.log("ADDED");
 }
 
 function createButton(iconName) {
@@ -72,7 +71,6 @@ function createButton(iconName) {
 function rotateVideo(amount) {
     curRotateIndex = (curRotateIndex + amount) % 4;
     if(curRotateIndex < 0) curRotateIndex += 4;
-    console.log("rotating" + curRotateIndex);
 
     let video = document.getElementsByTagName("video")[0];
 
@@ -106,22 +104,17 @@ function waitForElementsAndRun(elementsToWaitFor, callbackFunction) {
     let waitForVideoExistencePoll = setInterval(
         () => {
             let allExist = true;
-            console.log("checking");
             elementsToWaitFor.forEach(element => {
-                console.log(element.type)
                 switch (element.type) {
                     case ELEMENT_TYPE.ID:
-                        console.log(document.getElementById(element.content));
                         if (!document.getElementById(element.content)) allExist = false;
                         break;
                     
                     case ELEMENT_TYPE.CLASS:
-                        console.log(document.getElementsByClassName(element.content));
                         if (!document.getElementsByClassName(element.content).length) allExist = false;
                         break;
 
                     case ELEMENT_TYPE.TAG:
-                        console.log(document.getElementsByTagName(element.content));
                         if (!document.getElementsByTagName(element.content).length) allExist = false;
                         break;
 
@@ -138,7 +131,6 @@ function waitForElementsAndRun(elementsToWaitFor, callbackFunction) {
         , 1000)
 
     function cancelPoll() {
-        console.log("foundit!");
         clearInterval(waitForVideoExistencePoll);
     }
 }
