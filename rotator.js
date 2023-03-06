@@ -1,5 +1,3 @@
-
-
 const ELEMENT_TYPE = {
     ID: "id",
     TAG: "tag",
@@ -12,7 +10,7 @@ let elementsToWaitFor = [
 ]
 
 let rotateAmounts = ["0", "90", "180", "270"];
-let curRotateIndex = 0;
+let curRotationIndex = 0;
 
 let ytIconColor = "var(--yt-spec-text-primary)";
 let ytButtonColor = "var(--yt-spec-additive-background)";
@@ -38,10 +36,10 @@ function addRotationButtons() {
     buttonsContainer.style.gap = "8px";
 
     let rotateLeftButton = createButton("rotate_left");
-    rotateLeftButton.addEventListener("click", () => {rotateVideo(-1)});
+    rotateLeftButton.addEventListener("click", () => {rotateVideoBy(-1)});
 
     let rotateRightButton = createButton("rotate_right");
-    rotateRightButton.addEventListener("click", () => {rotateVideo(1)});
+    rotateRightButton.addEventListener("click", () => {rotateVideoBy(1)});
 
     buttonsContainer.append(rotateLeftButton, rotateRightButton);
     titleDiv.append(cssLink);
@@ -68,23 +66,33 @@ function createButton(iconName) {
     return button;
 }
 
-function rotateVideo(amount) {
-    curRotateIndex = (curRotateIndex + amount) % 4;
-    if(curRotateIndex < 0) curRotateIndex += 4;
+function rotateVideoBy(amount) {
+    curRotationIndex = (curRotationIndex + amount) % 4;
+    if(curRotationIndex < 0) curRotationIndex += 4;
+    setVideoRotation(curRotationIndex);
+}
+
+function resetVideoRotation() {
+    curRotationIndex = 0;
+    setVideoRotation(curRotationIndex);
+}
+
+function setVideoRotation(rotationIndex = 0) { 
+    if(rotationIndex >= 4 || rotationIndex < 0) console.error("rotationIndex must be 0-3");
 
     let video = document.getElementsByTagName("video")[0];
 
     let translateYAmount = (video.offsetWidth - video.offsetHeight) / 2;
-    let videoTransform = "rotate(" + rotateAmounts[curRotateIndex] + "deg)";
+    let videoTransform = "rotate(" + rotateAmounts[rotationIndex] + "deg)";
 
-    if(curRotateIndex === 1) {
+    if(rotationIndex === 1) {
         videoTransform += " translate(" + translateYAmount + "px)";
-    } else if(curRotateIndex === 3) {
+    } else if(rotationIndex === 3) {
         videoTransform += " translate(-" + translateYAmount + "px)";
     }
     video.style.transform = videoTransform;
 
-    adjustPlayerHeight(curRotateIndex);
+    adjustPlayerHeight(rotationIndex);
 }
 
 function adjustPlayerHeight(rotationIndex) {
@@ -134,3 +142,9 @@ function waitForElementsAndRun(elementsToWaitFor, callbackFunction) {
         clearInterval(waitForVideoExistencePoll);
     }
 }
+
+// Reset rotation index on new video clicked without reload
+// Event name: https://stackoverflow.com/questions/34077641
+document.addEventListener('yt-navigate-start', () => {
+    waitForElementsAndRun(elementsToWaitFor, resetVideoRotation);
+});
